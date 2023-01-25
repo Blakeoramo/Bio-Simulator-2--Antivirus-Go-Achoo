@@ -1,2 +1,38 @@
 # Bio Simulator 2: Antivirus Go Achoo
- A GUI-based Point-And-Click Adventure game made in PowerShell. Supports embedded sound, images, and multithreading.
+ A proof of concept more than anything else that a fully fledged GUI-based game can be done in PowerShell
+ 
+ Credits:
+ 
+ Dr Seuss
+ 
+ Dreamworks
+ 
+ PixaBay
+ 
+ Soundraw
+ 
+ Google
+ 
+ Bio
+ 
+ Elon Musk
+ 
+ Bill Gates
+ 
+ Microsoft
+ 
+ DALL-E
+ 
+ MeloBytes
+ 
+ SEGA
+ 
+ Nintendo
+ 
+ MJ
+ 
+ Mike Myers
+ 
+ Alec Baldwin
+ 
+ Bungie
