@@ -8,14 +8,6 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 ##
 
-##Game Paths as Strings
-$LiteralPathString1 = ('$GameRootPath')
-$LiteralPathString2 = ('$SoundPlayerPath')
-$LiteralPathString3 = ('$WindowRendererPath')
-$LiteralVariableString = ('$SafeToRunGame')
-#
-
-
 ##Hides Console
 
 Add-Type -Name Window -Namespace Console -MemberDefinition '
