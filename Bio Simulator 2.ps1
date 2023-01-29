@@ -1,14 +1,3 @@
-$GameRootPath = $null
-$SoundPlayerPath = $null
-$WindowRendererPath = $null
-$SafeToRunGame = 0
-
-$LiteralPathString1 = ('$GameRootPath')
-$LiteralPathString2 = ('$SoundPlayerPath')
-$LiteralPathString3 = ('$WindowRendererPath')
-$LiteralVariableString = ('$SafeToRunGame')
-
-
 #COMPILER SCRIPT 
 
 #Invoke-ps2exe -inputFile "D:\Blake\Documents\Bio Simulator 2\Bio Simulator 2.ps1" -outputFile "D:\Blake\Documents\Bio Simulator 2\Bio Simulator 2.exe" -iconFile "D:\Blake\Documents\Bio Simulator 2\areyououtofyourfokinmind.ico" -title "Bio Simulator 2: Antirus Go Achoo" -description "Deep in the catacombs of Neverland Ranch lie a long-forgotten enemy, awakened after tens of thousands of years lying dormant..." -company "Andrew Tate Studios LLC" -version "69" -exitOnCancel -DPIAware -winFormsDPIAware
@@ -17,8 +6,14 @@ $LiteralVariableString = ('$SafeToRunGame')
 ##DEPENENCIES
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-Hide-Console
 ##
+
+##Game Paths as Strings
+$LiteralPathString1 = ('$GameRootPath')
+$LiteralPathString2 = ('$SoundPlayerPath')
+$LiteralPathString3 = ('$WindowRendererPath')
+$LiteralVariableString = ('$SafeToRunGame')
+#
 
 
 ##Hides Console
@@ -39,141 +34,125 @@ $consolePtr = [Console.Window]::GetConsoleWindow()
 }
 ##
 
+Function Write-StringToFile {
+    param (
+        [string]$FilePath,
+        [string]$String,
+        [int]$LineNumber
+    )
+
+    # Create the file if it doesn't exist
+    If (-not (Test-Path $FilePath)) {
+        New-Item -ItemType File -Path $FilePath
+    }
+
+    $fileContent = Get-Content -Path $FilePath -Raw
+    $newContent = ($fileContent -split "`n")
+    # Check if the line number is within bounds
+    If ($LineNumber -gt $newContent.Length) {
+        # Add blank lines to the array until the line number is within bounds
+        For ($i = $newContent.Length; $i -lt $LineNumber; $i++) {
+            $newContent += ""
+        }
+    }
+    Try {
+        $newContent[$LineNumber] = $String
+    } Catch {
+        Write-Warning "Line number is outside the bounds of the array. Continuing with the script."
+    }
+    Set-Content -Path $FilePath -Value ($newContent -join "`n")
+}
+
 Hide-Console
 cls
 
-try {
+function Install-Game {
+        
+        ##Informs player that game is installing
+        [System.Windows.Forms.MessageBox]::Show("Game is installing. Please Wait...")
+        #
 
-    if ($GameRootPath -eq $null) {
-        ##Prompt letting people know that it wants you to open itself
-        [System.Windows.Forms.MessageBox]::Show("Please open the program you are currently running to begin installation.")
-        ##
+        ##Figures out where the hell it's at
+        $BioSimulator2Path = $MyInvocation.MyCommand.Path
 
-        #Ask to open file
-        [void][Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic')
-        $BioSimulator2 = New-Object System.Windows.Forms.OpenFileDialog -Property @{ 
-            InitialDirectory = [Environment]::GetFolderPath('MyComputer') 
-            Filter = 'Bio Simulator 2|Bio Simulator 2.ps1'
-        }
-        $BioSimulator2.ShowDialog()
-        $BioSimulator2Path = $BioSimulator2.FileName
-        ##Write-Output "$BioSimulator2Path"
-
-        ##
-
-       
-        if ($BioSimulator2Path -eq $null) {
-            throw "Deez Nuts on your forehead"
+        if ($PSScriptRoot -eq $null) {
+            $PSScriptRoot = Split-Path $BioSimulator2Path
+            #Write-Host "Script path: $BioSimulator2Path"
+        #
         } else {
-
-            #Autosave Game Root Path
-            $GameRootPath = (Get-Item $BioSimulator2Path).DirectoryName
-            $filePath = "$GameRootPath\Bio Simulator 2.ps1"
+            ##Autosave Game Root Path
+            $GameRootPath = $PSScriptRoot
+            $filePath = "$GameSaveFile"
             Write-Output "$filePath"
-            $GameRootPath = """$GameRootPath"""
             Write-Output "$GameRootPath"
-            $lineNumber = 1
-            $textToAdd = "$LiteralPathString1 = $GameRootPath"
+            $textToAdd = "$GameRootPath"
             Write-Output "$textToAdd"
-            $fileContent = Get-Content $filePath
-            $fileContent[$lineNumber-1] = $textToAdd
-            $fileContent | Set-Content $filePath
-            ##
+            Write-StringToFile -FilePath $GameSaveFile -String $textToAdd -LineNumber 0
+            #
 
             ##Autosave Sound Player Path
-            $GameRootDirectory = (Get-Item $BioSimulator2Path).DirectoryName
+            $GameRootDirectory = $PSScriptRoot
             Write-Output "$GameRootDirectory"
             $SoundPlayerPath = "$GameRootDirectory\SoundPlayer.ps1"
             Write-Output "$SoundPlayerPath"
-            $SoundPlayerPath = """$SoundPlayerPath"""
-            Write-Output "$SoundPlayerPath"
-            $lineNumber = 2
-            $textToAdd = "$LiteralPathString2 = $SoundPlayerPath"
+            $textToAdd = "$SoundPlayerPath"
             Write-Output "$textToAdd"
-            $fileContent = Get-Content $filePath
-            $fileContent[$lineNumber-1] = $textToAdd
-            $fileContent | Set-Content $filePath
-            ##
+            Write-StringToFile -FilePath $GameSaveFile -String $textToAdd -LineNumber 1
+            #
 
-            #Autosave Window Renderer Path
+            ##Autosave Window Renderer Path
             $WindowRendererPath = "$GameRootDirectory\WindowRenderer.ps1"
             Write-Output "$WindowRendererPath"
-            $WindowRendererPath = """$WindowRendererPath"""
-            Write-Output "$WindowRendererPath"
-            $lineNumber = 3
-            $textToAdd = "$LiteralPathString3 = $WindowRendererPath"
+            $textToAdd = "$WindowRendererPath"
             Write-Output "$textToAdd"
-            $fileContent = Get-Content $filePath
-            $fileContent[$lineNumber-1] = $textToAdd
-            $fileContent | Set-Content $filePath
-            ##
+            Write-StringToFile -FilePath $GameSaveFile -String $textToAdd -LineNumber 2
+            #
+
+            ##Tell the game that it's safe to launch
+            $textToAdd = "1"
+            Write-Output "$textToAdd"
+            Write-StringToFile -FilePath $GameSaveFile -String $textToAdd -LineNumber 3
+            #
 
             ##Woah, we're halfway there, (with the install)
-            [System.Windows.Forms.MessageBox]::Show("Finished first part of install. Please run again to finish install.")
-            ##
+            [System.Windows.Forms.MessageBox]::Show("Finished install. Please run again to run game.")
+            #
 
             exit
-        }
-    } 
-    
-    if (Test-Path -Path "$GameRootPath" -ea Stop) {
-        if ($SafeToRunGame -eq 0) {
-            
-            ##Message to let these mfs know the 2nd install has begun
-            [System.Windows.Forms.MessageBox]::Show("Beginning 2nd half of install. I'll let you know when it's done.")
-            ##
+        } 
+}
 
-            ##Test to make sure it's safe to run this
-            Test-Path -Path "$GameRootPath"
-            Write-Output "$GameRootPath"
-            $filePath = "$GameRootPath\Bio Simulator 2.ps1"
-            Write-Output "$filePath"
+if (-not(Test-Path "C:\ProgramData\Bio Simulator 2\Save.File")) {
 
-            ##Autoset Location of WindowRenderer
-            $WindowRendererPath = """$WindowRendererPath"""
-            Write-Output "$WindowRendererPath"
-            $lineNumber = 175
-            $textToAdd = "InlineScript {PowerShell -File $WindowRendererPath}"
-            Write-Output "$textToAdd"
-            $fileContent = Get-Content $filePath
-            $fileContent[$lineNumber-1] = $textToAdd
-            $fileContent | Set-Content $filePath
-            ##
+    ##Creates Game Save File Path
+    $GameSaveFile = "C:\ProgramData\Bio Simulator 2\Save.File"
+    ##Creates Game Save File and adds 100 lines
+    Write-StringToFile -FilePath $GameSaveFile -String "PlaceHolder" -LineNumber 9
+    ##Installs Game
+    Install-Game
+    #
 
-            ##Autoset Location of SoundPlayer
-            $SoundPlayerPath = """$SoundPlayerPath"""
-            $lineNumber = 176
-            $textToAdd = "InlineScript {PowerShell -File $SoundPlayerPath}"
-            Write-Output "$textToAdd"
-            $fileContent = Get-Content $filePath
-            $fileContent[$lineNumber-1] = $textToAdd
-            $fileContent | Set-Content $filePath
-            ##
+} else {
 
-            ##Tell game it's safe to run
-            $lineNumber = 4
-            $textToAdd = "$LiteralVariableString = 1"
-            Write-Output "$textToAdd"
-            $fileContent = Get-Content $filePath
-            $fileContent[$lineNumber-1] = $textToAdd
-            $fileContent | Set-Content $filePath
-            ##
+    ##Game Paths
+    $GameSaveFile = "C:\ProgramData\Bio Simulator 2\Save.File"
+    #$GameRootPath = (Get-Content $GameSaveFile)[1]
+    #$SoundPlayerPath = (Get-Content $GameSaveFile)[2]
+    #$WindowRendererPath = (Get-Content $GameSaveFile)[3]
+    $SafeToRunGame = (Get-Content $GameSaveFile)[4]
+    #
 
-            ##AWW YEAH. THIS IS HAPPENIN (We're done with the 2nd half of the install)
-            [System.Windows.Forms.MessageBox]::Show("Finished 2nd part of install. Please run again to start the game.")
-            ##
-
-            exit
-        } else {
-            Write-Output "U Can't See This"
-        }
-    } 
-    
     if ($SafeToRunGame = 1) {
         Workflow MultiThread {
             parallel {
-                InlineScript {PowerShell -File "$null"}
-                InlineScript {PowerShell -File "$null"}
+                InlineScript {$GameSaveFile = "C:\ProgramData\Bio Simulator 2\Save.File"
+                              $WindowRendererPath = (Get-Content $GameSaveFile)[2]
+                              ##Write-Output $WindowRendererPath
+                              PowerShell -File $WindowRendererPath}
+                InlineScript {$GameSaveFile = "C:\ProgramData\Bio Simulator 2\Save.File"
+                              $SoundPlayerPath = (Get-Content $GameSaveFile)[1]
+                              ##Write-Output $SoundPlayerPath
+                              PowerShell -File $SoundPlayerPath}
             }
         }
 
@@ -181,7 +160,7 @@ try {
         $GameWindow = 1
 
 
-
+        ##Main Game Loop
         while(1) {
 
             switch ($GameWindow) {
@@ -189,7 +168,7 @@ try {
                 1 {MultiThread
                 $GameWindow++
                 ;Break}
-                2 {pause
+                2 {##pause
                 $GameWindow++
                 ;Break}
                 3 {exit
@@ -198,9 +177,6 @@ try {
           
 
         }
+        #
     }
-} catch {
-    Write-Output "CATOSTROPHIC ERROR"
-    [System.Windows.Forms.MessageBox]::Show("Error. Try running the program again.")
-    exit
 }
