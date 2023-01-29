@@ -1,38 +1,41 @@
 # Bio Simulator 2: Antivirus Go Achoo
- A proof of concept more than anything else that a fully fledged GUI-based game can be done in PowerShell
+ A proof of concept more than anything else that a fully fledged GUI-based game can be done in PowerShell.
+ This game is non-profit and free of charge.
  
  Credits:
  
- Dr Seuss
+ ChatGPT-3 (Coding Assistance)
  
- Dreamworks
+ Dr Seuss (Creating Cat in the Hat)
  
- PixaBay
+ Dreamworks/Universal Studios (For creating the Cat in the Hat film)
  
- Soundraw
+ PixaBay (For royalty-free music)
  
- Google
+ Soundraw (For AI Generated Music)
  
- Bio
+ Google (For creating NSynth and allowing me to "AI generated" SFX)
  
- Elon Musk
+ Bio (For being the base of the story and Voice Acting)
  
- Bill Gates
+ Elon Musk (For making ChatGPT-3 and DALL-E)
  
- Microsoft
+ Bill Gates (For making Microsoft/Windows)
  
- DALL-E
+ Microsoft (For making Windows/PowerShell)
  
- MeloBytes
+ DALL-E (For making the AI generated scenery)
  
- SEGA
+ MeloBytes (For AI Generated music)
  
- Nintendo
+ SEGA (For making Sonic)
  
- MJ
+ Nintendo (For making Mario)
  
- Mike Myers
+ MJ (For making Neverland Ranch)
  
- Alec Baldwin
+ Mike Myers (For his portrayal of Cat in the Hat)
  
- Bungie
+ Alec Baldwin (For making his his portrayal of of Larry Quinn in Cat in the Hat)
+ 
+ Bungie (For making Halo and the Magnum gun sounds)
